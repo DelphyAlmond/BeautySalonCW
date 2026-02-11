@@ -11,7 +11,7 @@ public class ServiceBLC(IServiceSC serviceSC) : IServiceBLC
 {
     private readonly IServiceSC _serviceSC = serviceSC;
 
-    public List<ServiceDM> getAllServices(bool onlyActive = true)
+    public List<ServiceDM> GetAllServices(bool onlyActive = true)
     {
         return _serviceSC.GetList(onlyActive);
     }

@@ -11,12 +11,12 @@ public class ProductBLC(IProductSC productSC) : IProductBLC
 {
     private readonly IProductSC _productSC = productSC;
 
-    public List<ProductDM> getAllProducts(bool onlyActive = true)
+    public List<ProductDM> GetAllProducts(bool onlyActive = true)
     {
         return _productSC.GetList(onlyActive);
     }
 
-    public List<ProductDM> getAllProductsByManufacturer(string manufacturerID, bool onlyActive = true)
+    public List<ProductDM> GetAllProductsByManufacturer(string manufacturerID, bool onlyActive = true)
     {
         if (manufacturerID.IsEmpty())
             throw new ValidationException("< Product BLC: ManufacturerID is empty >");

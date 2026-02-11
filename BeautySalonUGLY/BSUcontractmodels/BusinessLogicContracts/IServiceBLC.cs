@@ -4,7 +4,7 @@ namespace BSUcontractmodels.BusinessLogicContracts;
 
 public interface IServiceBLC
 {
-    List<ServiceDM> getAllServices(bool onlyActive = true);
+    List<ServiceDM> GetAllServices(bool onlyActive = true);
     ServiceDM GetServiceByData(string data);
     void InsertS(ServiceDM product);
     void UpdateS(ServiceDM product);

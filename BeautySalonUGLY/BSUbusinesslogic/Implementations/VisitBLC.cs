@@ -19,9 +19,9 @@ public class VisitBLC(IVisitSC visitSC) : IVisitBLC
     public List<VisitDM> GetAllVisitsByMaster(string workerID, DateTime from, DateTime to)
     {
         if (workerID.IsEmpty())
-            throw new ValidationException("< Order BLC: WorkerID is empty >");
+            throw new ValidationException("< Visit BLC: WorkerID is empty >");
         if (!workerID.IsGuid())
-            throw new ValidationException("< Order BLC: WorkerID is not valid GUID >");
+            throw new ValidationException("< Visit BLC: WorkerID is not valid GUID >");
 
         return _visitSC.GetVisitsByDateGap(from, to, workerID, null, null);
     }
@@ -29,9 +29,9 @@ public class VisitBLC(IVisitSC visitSC) : IVisitBLC
     public List<VisitDM> GetAllVisitsByCustomer(string customerID, DateTime from, DateTime to)
     {
         if (customerID.IsEmpty())
-            throw new ValidationException("< Order BLC: CustomerID is empty >");
+            throw new ValidationException("< Visit BLC: CustomerID is empty >");
         if (!customerID.IsGuid())
-            throw new ValidationException("< Order BLC: CustomerID is not valid GUID >");
+            throw new ValidationException("< Visit BLC: CustomerID is not valid GUID >");
 
         return _visitSC.GetVisitsByDateGap(from, to, null, customerID, null);
     }
