@@ -4,11 +4,11 @@ namespace BSUcontractmodels.StoragesContracts;
 
 public interface IProductSC
 {
-    List<ProductDM> GetList(bool onlyActive = true, string? manufacturerId = null);
+    List<ProductDM> GetList(bool onlyActive = true, string? manufacturerID = null);
     ProductDM? GetItemByID(string id);
     ProductDM? GetItemByName(string name);
 
     void AddItem(ProductDM item);
-    void UpdateItem(ProductDM item);
-    void DeleteItem(string id);
+    void UpdItem(ProductDM item);
+    void DelItem(string id);
 }

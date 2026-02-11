@@ -9,6 +9,6 @@ public interface IServiceSC
     ServiceDM? GetElementByName(string name);
 
     void AddElement(ServiceDM service);
-    void UpdateElement(ServiceDM service);
-    void DeleteElement(string id);
+    void UpdElement(ServiceDM service);
+    void DelElement(string id);
 }
