@@ -37,6 +37,5 @@ public class VisitDM(string id, string customerID, string? orderID, string? work
         if ((Services?.Count ?? 0) == 0) throw new ValidationException("< Order: Cart is empty, no products chosen >");
 
         if (Summ <= 0) throw new ValidationException("< Order: Summ less or equal to 0, no products chosen >");
-        if (Status == OrderStatus.None) throw new ValidationException("< Status is not valid, not set >");
     }
 }
