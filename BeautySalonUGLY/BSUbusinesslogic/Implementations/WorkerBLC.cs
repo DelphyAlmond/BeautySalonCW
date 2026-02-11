@@ -1,4 +1,6 @@
-﻿using BSUcontractmodels.StoragesContracts;
+﻿using BSUcontractmodels.BusinessLogicContracts;
+using BSUcontractmodels.Exceptions;
+using BSUcontractmodels.StoragesContracts;
 using BSUcontrmodels.DataModels;
 using BSUcontrmodels.Enums;
 using BSUmodels.Exceptions;
@@ -6,14 +8,9 @@ using BSUmodels.Extensions;
 
 namespace BSUbusinesslogic.Implementations;
 
-public class WorkerBLC : IWorkerBLC
+public class WorkerBLC(IWorkerSC workerSC) : IWorkerBLC
 {
-    private readonly IWorkerSC _workerSC;
-
-    public WorkerBLC(IWorkerSC workerSC)
-    {
-        _workerSC = workerSC;
-    }
+    private readonly IWorkerSC _workerSC = workerSC;
 
     public List<WorkerDM> GetAllWorkers(bool onlyActive = true)
     {
@@ -50,18 +47,13 @@ public class WorkerBLC : IWorkerBLC
     public WorkerDM GetWorkerByData(string data)
     {
         if (data.IsEmpty())
-            throw new ValidationException("< Worker BLC: search data is empty >");
+            throw new ArgumentNullException($"< Worker BLC: search data - {nameof(data)}, is empty >");
 
         if (data.IsGuid())
         {
-            var byId = _workerSC.GetWByID(data);
-            if (byId != null) return byId;
+            return _workerSC.GetWByID(data) ?? throw new ElementNotFoundException(null, data);
         }
-
-        var byName = _workerSC.GetWByName(data);
-        if (byName != null) return byName;
-
-        throw new ValidationException($"< Worker with data '{data}' not found >");
+        return _workerSC.GetWByName(data) ?? throw new ElementNotFoundException($"< Worker with data '{data}' not found >", data);
     }
 
     public void InsertW(WorkerDM worker)
@@ -78,8 +70,8 @@ public class WorkerBLC : IWorkerBLC
 
     public void DeleteW(string id)
     {
-        if (id.IsEmpty())
-            throw new ValidationException("< Worker BLC: ID for deletion is empty >");
+        if (id.IsEmpty() || !id.IsGuid())
+            throw new ValidationException("< Worker BLC: ID for deletion is empty or not valid>");
         _workerSC.DelW(id);
     }
 }

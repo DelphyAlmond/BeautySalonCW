@@ -1,19 +1,15 @@
 ﻿using BSUcontractmodels.BusinessLogicContracts;
-using BSUcontrmodels.DataModels;
+using BSUcontractmodels.Exceptions;
 using BSUcontractmodels.StoragesContracts;
+using BSUcontrmodels.DataModels;
 using BSUmodels.Exceptions;
 using BSUmodels.Extensions;
 
 namespace BSUbusinesslogic.Implementations;
 
-public class ProductBLC : IProductBLC
+public class ProductBLC(IProductSC productSC) : IProductBLC
 {
-    private readonly IProductSC _productSC;
-
-    public ProductBLC(IProductSC productSC)
-    {
-        _productSC = productSC;
-    }
+    private readonly IProductSC _productSC = productSC;
 
     public List<ProductDM> getAllProducts(bool onlyActive = true)
     {
@@ -30,18 +26,13 @@ public class ProductBLC : IProductBLC
     public ProductDM GetProductByData(string data)
     {
         if (data.IsEmpty())
-            throw new ValidationException("< Product BLC: search data is empty >");
+            throw new ArgumentNullException($"< Product BLC: search data - {nameof(data)}, is empty >");
 
         if (data.IsGuid())
         {
-            var byId = _productSC.GetItemByID(data);
-            if (byId != null) return byId;
+            return _productSC.GetItemByID(data) ?? throw new ElementNotFoundException(null, data);
         }
-
-        var byName = _productSC.GetItemByName(data);
-        if (byName != null) return byName;
-
-        throw new ValidationException($"< Product with data '{data}' not found >");
+        return _productSC.GetItemByName(data) ?? throw new ElementNotFoundException($"< Product with data '{data}' not found >", data);
     }
 
     public void InsertPitem(ProductDM product)
@@ -58,8 +49,8 @@ public class ProductBLC : IProductBLC
 
     public void DeletePitem(string id)
     {
-        if (id.IsEmpty())
-            throw new ValidationException("< Product BLC: ID for deletion is empty >");
+        if (id.IsEmpty() || !id.IsGuid())
+            throw new ValidationException("< Product BLC: ID for deletion is empty or not valid >");
         _productSC.DelItem(id);
     }
 }

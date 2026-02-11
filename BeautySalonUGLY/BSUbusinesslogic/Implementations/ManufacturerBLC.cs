@@ -1,19 +1,15 @@
 ﻿using BSUcontractmodels.BusinessLogicContracts;
-using BSUcontrmodels.DataModels;
+using BSUcontractmodels.Exceptions;
 using BSUcontractmodels.StoragesContracts;
+using BSUcontrmodels.DataModels;
 using BSUmodels.Exceptions;
 using BSUmodels.Extensions;
 
 namespace BSUbusinesslogic.Implementations;
 
-public class ManufacturerBLC : IManufacturerBLC
+public class ManufacturerBLC(IManufacturerSC manufacturerSC) : IManufacturerBLC
 {
-    private readonly IManufacturerSC _manufacturerSC;
-
-    public ManufacturerBLC(IManufacturerSC manufacturerSC)
-    {
-        _manufacturerSC = manufacturerSC;
-    }
+    private readonly IManufacturerSC _manufacturerSC = manufacturerSC;
 
     public List<ManufacturerDM> GetAllManufacturers()
     {
@@ -23,21 +19,16 @@ public class ManufacturerBLC : IManufacturerBLC
     public ManufacturerDM GetManufacturersByData(string data)
     {
         if (data.IsEmpty())
-            throw new ValidationException("< Manufacturer BLC: search data is empty >");
+            throw new ArgumentNullException($"< Manufacturer BLC: search data - {nameof(data)}, is empty >");
 
         if (data.IsGuid())
         {
-            var byId = _manufacturerSC.GetMByID(data);
-            if (byId != null) return byId;
+            return _manufacturerSC.GetMByID(data) ?? throw new ElementNotFoundException(null, data);
         }
-
         var byName = _manufacturerSC.GetMByName(data);
         if (byName != null) return byName;
-
-        var byPrevName = _manufacturerSC.GetMPrevName(data);
-        if (byPrevName != null) return byPrevName;
-
-        throw new ValidationException($"< Manufacturer with data '{data}' not found >");
+        byName = _manufacturerSC.GetMPrevName(data);
+        return byName ?? throw new ElementNotFoundException($"< Manufacturer with data '{data}' not found >", data);
     }
 
     public void InsertM(ManufacturerDM manufacturer)
@@ -54,8 +45,8 @@ public class ManufacturerBLC : IManufacturerBLC
 
     public void DeleteM(string id)
     {
-        if (id.IsEmpty())
-            throw new ValidationException("< Manufacturer BLC: ID for deletion is empty >");
+        if (id.IsEmpty() || !id.IsGuid())
+            throw new ValidationException("< Manufacturer BLC: ID for deletion is empty or not valid >");
         _manufacturerSC.DelM(id);
     }
 }

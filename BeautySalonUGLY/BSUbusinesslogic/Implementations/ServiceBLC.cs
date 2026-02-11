@@ -1,19 +1,15 @@
 ﻿using BSUcontractmodels.BusinessLogicContracts;
-using BSUcontrmodels.DataModels;
+using BSUcontractmodels.Exceptions;
 using BSUcontractmodels.StoragesContracts;
+using BSUcontrmodels.DataModels;
 using BSUmodels.Exceptions;
 using BSUmodels.Extensions;
 
 namespace BSUbusinesslogic.Implementations;
 
-public class ServiceBLC : IServiceBLC
+public class ServiceBLC(IServiceSC serviceSC) : IServiceBLC
 {
-    private readonly IServiceSC _serviceSC;
-
-    public ServiceBLC(IServiceSC serviceSC)
-    {
-        _serviceSC = serviceSC;
-    }
+    private readonly IServiceSC _serviceSC = serviceSC;
 
     public List<ServiceDM> getAllServices(bool onlyActive = true)
     {
@@ -23,18 +19,13 @@ public class ServiceBLC : IServiceBLC
     public ServiceDM GetServiceByData(string data)
     {
         if (data.IsEmpty())
-            throw new ValidationException("< Service BLC: search data is empty >");
+            throw new ArgumentNullException($"< Service BLC: search data - {nameof(data)}, is empty >");
 
         if (data.IsGuid())
         {
-            var byId = _serviceSC.GetElementByID(data);
-            if (byId != null) return byId;
+            return _serviceSC.GetElementByID(data) ?? throw new ElementNotFoundException(null, data);
         }
-
-        var byName = _serviceSC.GetElementByName(data);
-        if (byName != null) return byName;
-
-        throw new ValidationException($"< Service with data '{data}' not found >");
+        return _serviceSC.GetElementByName(data) ?? throw new ElementNotFoundException($"< Service with data '{data}' not found >", data);
     }
 
     public void InsertS(ServiceDM service)
@@ -51,8 +42,8 @@ public class ServiceBLC : IServiceBLC
 
     public void DeleteS(string id)
     {
-        if (id.IsEmpty())
-            throw new ValidationException("< Service BLC: ID for deletion is empty >");
+        if (id.IsEmpty() || !id.IsGuid())
+            throw new ValidationException("< Service BLC: ID for deletion is empty or not valid >");
         _serviceSC.DelElement(id);
     }
 }

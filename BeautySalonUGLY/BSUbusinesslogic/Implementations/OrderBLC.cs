@@ -1,4 +1,5 @@
 ﻿using BSUcontractmodels.BusinessLogicContracts;
+using BSUcontractmodels.Exceptions;
 using BSUcontractmodels.StoragesContracts;
 using BSUcontrmodels.DataModels;
 using BSUmodels.Exceptions;
@@ -6,14 +7,9 @@ using BSUmodels.Extensions;
 
 namespace BSUbusinesslogic.Implementations;
 
-public class OrderBLC : IOrderBLC
+public class OrderBLC(IOrderSC orderSC) : IOrderBLC
 {
-    private readonly IOrderSC _orderSC;
-
-    public OrderBLC(IOrderSC orderSC)
-    {
-        _orderSC = orderSC;
-    }
+    private readonly IOrderSC _orderSC = orderSC;
 
     // все заказы за указанный период (без дополнительных фильтров)
     public List<OrderDM> GetAllOrdersByDateGap(DateTime from, DateTime to)
@@ -57,14 +53,12 @@ public class OrderBLC : IOrderBLC
     public OrderDM GetOrderByData(string data)
     {
         if (data.IsEmpty())
-            throw new ValidationException("< Order BLC: search data is empty >");
+            throw new ArgumentNullException($"< Order BLC: search data - {nameof(data)}, is empty >");
 
         if (data.IsGuid())
         {
-            var byId = _orderSC.GetOByID(data);
-            if (byId != null) return byId;
+            return _orderSC.GetOByID(data) ?? throw new ElementNotFoundException(null, data);
         }
-
         throw new ValidationException($"< Order with data '{data}' not found >");
     }
 

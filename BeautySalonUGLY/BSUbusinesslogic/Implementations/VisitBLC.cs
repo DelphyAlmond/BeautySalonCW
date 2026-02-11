@@ -3,17 +3,13 @@ using BSUcontrmodels.DataModels;
 using BSUcontractmodels.StoragesContracts;
 using BSUmodels.Exceptions;
 using BSUmodels.Extensions;
+using BSUcontractmodels.Exceptions;
 
 namespace BSUbusinesslogic.Implementations;
 
-public class VisitBLC : IVisitBLC
+public class VisitBLC(IVisitSC visitSC) : IVisitBLC
 {
-    private readonly IVisitSC _visitSC;
-
-    public VisitBLC(IVisitSC visitSC)
-    {
-        _visitSC = visitSC;
-    }
+    private readonly IVisitSC _visitSC = visitSC;
 
     public List<VisitDM> GetAllVisitsByDateGap(DateTime from, DateTime to)
     {
@@ -53,14 +49,12 @@ public class VisitBLC : IVisitBLC
     public VisitDM GetVisitByData(string data)
     {
         if (data.IsEmpty())
-            throw new ValidationException("< Visit BLC: search data is empty >");
+            throw new ArgumentNullException($"< Visit BLC: search data - {nameof(data)}, is empty >");
 
         if (data.IsGuid())
         {
-            var byId = _visitSC.GetVByID(data);
-            if (byId != null) return byId;
+            return _visitSC.GetVByID(data) ?? throw new ElementNotFoundException(null, data);
         }
-
         throw new ValidationException($"< Visit with data '{data}' not found >");
     }
 
@@ -80,6 +74,9 @@ public class VisitBLC : IVisitBLC
     {
         if (id.IsEmpty())
             throw new ValidationException("< Visit BLC: ID for deletion is empty >");
+        if (!id.IsGuid())
+            throw new ValidationException("< Visit BLC: ID is not valid GUID >");
+
         _visitSC.DelV(id);
     }
 }

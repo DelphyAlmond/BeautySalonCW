@@ -1,4 +1,5 @@
 ﻿using BSUcontractmodels.BusinessLogicContracts;
+using BSUcontractmodels.Exceptions;
 using BSUcontractmodels.StoragesContracts;
 using BSUcontrmodels.DataModels;
 using BSUmodels.Exceptions;
@@ -7,14 +8,9 @@ using System.Text.RegularExpressions;
 
 namespace BSUbusinesslogic.Implementations;
 
-public class CustomerBLC : ICustomerBLC
+public class CustomerBLC(ICustomerSC customerSC) : ICustomerBLC
 {
-    private readonly ICustomerSC _customerSC;
-
-    public CustomerBLC(ICustomerSC customerSC)
-    {
-        _customerSC = customerSC;
-    }
+    private readonly ICustomerSC _customerSC = customerSC;
 
     public List<CustomerDM> GetAllCustomers()
     {
@@ -24,27 +20,22 @@ public class CustomerBLC : ICustomerBLC
     public CustomerDM GetCustomerByData(string data)
     {
         if (data.IsEmpty())
-            throw new ValidationException("< Customer BLC: search data is empty >");
+            throw new ArgumentNullException($"< Customer BLC: search data - {nameof(data)}, is empty >");
 
         // Проверяем, является ли строка GUID
         if (data.IsGuid())
         {
-            var byId = _customerSC.GetCByID(data);
-            if (byId != null) return byId;
+            return _customerSC.GetCByID(data) ?? throw new ElementNotFoundException(null, data);
         }
 
         // / похоже ли на номер телефона
         if (Regex.IsMatch(data, @"^(?:\+7|8)[\s\-]*(?:\(\d{3}\)|\d{3})[\s\-]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}$"))
         {
-            var byPhone = _customerSC.GetCByPhone(data);
-            if (byPhone != null) return byPhone;
+            return _customerSC.GetCByPhone(data) ?? throw new ElementNotFoundException(null, data);
         }
 
         // Иначе ищем по имени
-        var byName = _customerSC.GetCByName(data);
-        if (byName != null) return byName;
-
-        throw new ValidationException($"< Customer with data '{data}' not found >");
+        return _customerSC.GetCByName(data) ?? throw new ElementNotFoundException($"< Customer with data '{data}' not found >", data);
     }
 
     public void InsertC(CustomerDM customer)
@@ -61,8 +52,8 @@ public class CustomerBLC : ICustomerBLC
 
     public void DeleteC(string id)
     {
-        if (id.IsEmpty())
-            throw new ValidationException("< Customer BLC: ID for deletion is empty >");
+        if (id.IsEmpty() || !id.IsGuid())
+            throw new ValidationException("< Customer BLC: ID for deletion is empty or not valid >");
         _customerSC.DelC(id);
     }
 }
