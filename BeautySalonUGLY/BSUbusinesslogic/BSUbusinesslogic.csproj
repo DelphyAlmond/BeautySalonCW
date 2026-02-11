@@ -10,8 +10,4 @@
     <ProjectReference Include="..\BSUcontractmodels\BSUcontractmodels.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Implementations\" />
-  </ItemGroup>
-
 </Project>

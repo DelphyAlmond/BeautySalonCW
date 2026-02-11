@@ -8,6 +8,8 @@ public interface IWorkerSC
     WorkerDM? GetWByID(string id);
     WorkerDM? GetWByName(string fullname);
 
+    // [ * ]
+
     void AddW(WorkerDM worker);
     void UpdW(WorkerDM worker);
     void DelW(string id);
