@@ -6,7 +6,7 @@ using BSUmodels.Extensions;
 namespace BSUcontrmodels.DataModels;
 
 public class VisitDM(string id, string customerID, string? orderID, string? workerID, DateTime plannedDate,
-    List<ProdUnitOrderLinkDM> list, double summ, double bonuses, bool isCaneled) : IValidation
+    List<ServUnitVisitLinkDM> list, double summ, double bonuses, bool isCaneled) : IValidation
 {
     public string ID { get; private set; } = id;
     public string CustomerID { get; private set; } = customerID;
@@ -21,7 +21,7 @@ public class VisitDM(string id, string customerID, string? orderID, string? work
     public string? WorkerID { get; private set; } = workerID;
     public DateTime DateReg { get; private set; } = DateTime.UtcNow;
     public DateTime DatePlanned { get; private set; } = plannedDate;
-    public List<ProdUnitOrderLinkDM> Services { get; private set; } = list;
+    public List<ServUnitVisitLinkDM> Services { get; private set; } = list; // [ ! ] corrected
     public double Summ { get; private set; } = summ; // + order summ
     public double Discount { get; private set; } = bonuses;
     public bool IsCanceled { get; private set; } = isCaneled;
