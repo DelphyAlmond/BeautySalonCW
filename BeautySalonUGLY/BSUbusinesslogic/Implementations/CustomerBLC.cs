@@ -14,7 +14,7 @@ public class CustomerBLC(ICustomerSC customerSC) : ICustomerBLC
 
     public List<CustomerDM> GetAllCustomers()
     {
-        return _customerSC.GetCustomers();
+        return _customerSC.GetCustomers() ?? throw new NullListException();
     }
 
     public CustomerDM GetCustomerByData(string data)

@@ -13,7 +13,7 @@ public class ProductBLC(IProductSC productSC) : IProductBLC
 
     public List<ProductDM> GetAllProducts(bool onlyActive = true)
     {
-        return _productSC.GetList(onlyActive);
+        return _productSC.GetList(onlyActive) ?? throw new NullListException();
     }
 
     public List<ProductDM> GetAllProductsByManufacturer(string manufacturerID, bool onlyActive = true)

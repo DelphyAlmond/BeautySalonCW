@@ -13,7 +13,7 @@ public class VisitBLC(IVisitSC visitSC) : IVisitBLC
 
     public List<VisitDM> GetAllVisitsByDateGap(DateTime from, DateTime to)
     {
-        return _visitSC.GetVisitsByDateGap(from, to, null, null, null);
+        return _visitSC.GetVisitsByDateGap(from, to, null, null, null) ?? throw new NullListException();
     }
 
     public List<VisitDM> GetAllVisitsByMaster(string workerID, DateTime from, DateTime to)

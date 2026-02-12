@@ -14,7 +14,7 @@ public class OrderBLC(IOrderSC orderSC) : IOrderBLC
     // все заказы за указанный период (без дополнительных фильтров)
     public List<OrderDM> GetAllOrdersByDateGap(DateTime from, DateTime to)
     {
-        return _orderSC.GetOrdersByDateGap(from, to, null, null, null);
+        return _orderSC.GetOrdersByDateGap(from, to, null, null, null) ?? throw new NullListException();
     }
 
     // заказы конкретного сотрудника (worker) за период

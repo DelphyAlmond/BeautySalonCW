@@ -17,7 +17,7 @@ public class WorkerBLC(IWorkerSC workerSC) : IWorkerBLC
         var all = _workerSC.GetWorkers();
         if (onlyActive)
             return all.Where(w => !w.IsDeleted).ToList();
-        return all;
+        return all ?? throw new NullListException();
     }
 
     // Без реализации на стороне StorageContract-а [ * ]

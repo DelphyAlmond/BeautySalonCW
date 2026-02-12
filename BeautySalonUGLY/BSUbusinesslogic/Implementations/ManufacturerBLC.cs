@@ -13,7 +13,7 @@ public class ManufacturerBLC(IManufacturerSC manufacturerSC) : IManufacturerBLC
 
     public List<ManufacturerDM> GetAllManufacturers()
     {
-        return _manufacturerSC.GetManufacturers();
+        return _manufacturerSC.GetManufacturers() ?? throw new NullListException();
     }
 
     public ManufacturerDM GetManufacturersByData(string data)

@@ -13,7 +13,7 @@ public class ServiceBLC(IServiceSC serviceSC) : IServiceBLC
 
     public List<ServiceDM> GetAllServices(bool onlyActive = true)
     {
-        return _serviceSC.GetList(onlyActive);
+        return _serviceSC.GetList(onlyActive) ?? throw new NullListException();
     }
 
     public ServiceDM GetServiceByData(string data)
