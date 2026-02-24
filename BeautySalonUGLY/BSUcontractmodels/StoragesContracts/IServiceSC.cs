@@ -4,9 +4,9 @@ namespace BSUcontractmodels.StoragesContracts;
 
 public interface IServiceSC
 {
-    List<ServiceDM> GetList(bool onlyActive = true);
-    ServiceDM? GetElementByID(string id);
-    ServiceDM? GetElementByName(string name);
+    List<ServiceDM> GetServices(bool onlyActive = true);
+    ServiceDM? GetSByID(string id);
+    ServiceDM? GetSByName(string name);
 
     void AddElement(ServiceDM service);
     void UpdElement(ServiceDM service);

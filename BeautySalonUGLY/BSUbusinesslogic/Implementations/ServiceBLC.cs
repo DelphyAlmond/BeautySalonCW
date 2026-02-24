@@ -13,7 +13,7 @@ public class ServiceBLC(IServiceSC serviceSC) : IServiceBLC
 
     public List<ServiceDM> GetAllServices(bool onlyActive = true)
     {
-        return _serviceSC.GetList(onlyActive) ?? throw new NullListException();
+        return _serviceSC.GetServices(onlyActive) ?? throw new NullListException();
     }
 
     public ServiceDM GetServiceByData(string data)
@@ -23,9 +23,9 @@ public class ServiceBLC(IServiceSC serviceSC) : IServiceBLC
 
         if (data.IsGuid())
         {
-            return _serviceSC.GetElementByID(data) ?? throw new ElementNotFoundException(null, data);
+            return _serviceSC.GetSByID(data) ?? throw new ElementNotFoundException(null, data);
         }
-        return _serviceSC.GetElementByName(data) ?? throw new ElementNotFoundException($"< Service with data '{data}' not found >", data);
+        return _serviceSC.GetSByName(data) ?? throw new ElementNotFoundException($"< Service with data '{data}' not found >", data);
     }
 
     public void InsertS(ServiceDM service)

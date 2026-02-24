@@ -4,7 +4,7 @@ namespace BSUcontractmodels.StoragesContracts;
 
 public interface IProductSC
 {
-    List<ProductDM> GetList(bool onlyActive = true, string? manufacturerID = null);
+    List<ProductDM> GetProducts(bool onlyActive = true, string? manufacturerID = null);
     ProductDM? GetItemByID(string id);
     ProductDM? GetItemByName(string name);
 

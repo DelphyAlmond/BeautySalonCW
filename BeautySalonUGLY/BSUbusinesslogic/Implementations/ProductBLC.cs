@@ -13,14 +13,14 @@ public class ProductBLC(IProductSC productSC) : IProductBLC
 
     public List<ProductDM> GetAllProducts(bool onlyActive = true)
     {
-        return _productSC.GetList(onlyActive) ?? throw new NullListException();
+        return _productSC.GetProducts(onlyActive) ?? throw new NullListException();
     }
 
     public List<ProductDM> GetAllProductsByManufacturer(string manufacturerID, bool onlyActive = true)
     {
         if (manufacturerID.IsEmpty())
             throw new ValidationException("< Product BLC: ManufacturerID is empty >");
-        return _productSC.GetList(onlyActive, manufacturerID);
+        return _productSC.GetProducts(onlyActive, manufacturerID);
     }
 
     public ProductDM GetProductByData(string data)
