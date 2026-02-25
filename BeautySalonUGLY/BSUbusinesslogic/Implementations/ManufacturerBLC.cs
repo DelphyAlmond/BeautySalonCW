@@ -27,7 +27,7 @@ public class ManufacturerBLC(IManufacturerSC manufacturerSC) : IManufacturerBLC
         }
         var byName = _manufacturerSC.GetMByName(data);
         if (byName != null) return byName;
-        byName = _manufacturerSC.GetMPrevName(data);
+        byName = _manufacturerSC.GetMByPrevName(data);
         return byName ?? throw new ElementNotFoundException($"< Manufacturer with data '{data}' not found >", data);
     }
 

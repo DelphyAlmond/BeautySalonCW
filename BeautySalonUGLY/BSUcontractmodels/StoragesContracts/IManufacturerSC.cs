@@ -7,7 +7,7 @@ public interface IManufacturerSC
     List<ManufacturerDM> GetManufacturers();
     ManufacturerDM? GetMByID(string id);
     ManufacturerDM? GetMByName(string naming);
-    ManufacturerDM? GetMPrevName(string naming);
+    ManufacturerDM? GetMByPrevName(string naming);
 
     void AddM(ManufacturerDM manufacturer);
     void UpdM(ManufacturerDM manufacturer);

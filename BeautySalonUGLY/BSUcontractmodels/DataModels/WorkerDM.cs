@@ -14,6 +14,7 @@ public class WorkerDM(string id, string fName, Post postType, string password, D
     public Post PostType { get; private set; } = postType;
     public string Password { get; private set; } = password;
     public bool IsDeleted { get; private set; } = isDel;
+    // for soft delete - как и с товаром\заказом\услугами...
 
     public DateTime BirthDate { get; private set; } = birthDate;
     public DateTime EmploymentDate { get; private set; } = employmentDate;
