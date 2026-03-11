@@ -2,4 +2,5 @@
   <Project Path="BSUbusinesslogic/BSUbusinesslogic.csproj" Id="8cb76b86-c9c7-4e99-a479-a793c1619cd4" />
   <Project Path="BSUcontractmodels/BSUcontractmodels.csproj" />
   <Project Path="BSUdatabase/BSUdatabase.csproj" Id="8e654d77-6fd4-4d61-aac4-9ac651200f67" />
+  <Project Path="BSUWebAppi/BSUWebAppi.csproj" Id="ffade7d8-fdfc-47d3-a747-be03a086cb8d" />
 </Solution>

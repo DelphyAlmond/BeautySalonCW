@@ -16,4 +16,8 @@
     <ProjectReference Include="..\BSUcontractmodels\BSUcontractmodels.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="BSUWebAppi" />
+	</ItemGroup>
+
 </Project>
