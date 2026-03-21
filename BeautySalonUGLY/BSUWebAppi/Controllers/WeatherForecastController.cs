@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BSUWebAppi.Controllers
 {
+    [Authorize] // +> auth.key.use
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase

@@ -1,12 +1,17 @@
 using BSUbusinesslogic.Implementations;
+using BSUcontractmodels.AdapterContracts;
 using BSUcontractmodels.BusinessLogicContracts;
 using BSUcontractmodels.Infrastructure;
 using BSUcontractmodels.StoragesContracts;
 using BSUdatabase;
 using BSUdatabase.Implementations;
+using BSUWebAppi;
+using BSUWebAppi.Adapters;
 using BSUWebAppi.InfrastructureDB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -91,6 +96,15 @@ builder.Services.AddTransient<IOrderSC, OrderSC>();
 builder.Services.AddTransient<IVisitSC, VisitSC>();
 builder.Services.AddTransient<IWorkerSC, WorkerSC>();
 
+
+
+builder.Services.AddTransient<ICustomerAdapter, CustomerAdapter>();
+builder.Services.AddTransient<IManufacturerAdapter, ManufacturerAdapter>();
+builder.Services.AddTransient<IServiceAdapter, ServiceAdapter>();
+builder.Services.AddTransient<IProductAdapter, ProductAdapter>();
+builder.Services.AddTransient<IOrderAdapter, OrderAdapter>();
+builder.Services.AddTransient<IVisitAdapter, VisitAdapter>();
+builder.Services.AddTransient<IWorkerAdapter, WorkerAdapter>();
 
 app.UseHttpsRedirection();
 
