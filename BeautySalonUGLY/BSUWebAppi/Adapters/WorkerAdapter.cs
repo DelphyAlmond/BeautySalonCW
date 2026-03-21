@@ -24,11 +24,11 @@ public class WorkerAdapter : IWorkerAdapter
         _mapper = mapper;
     }
 
-    public WorkerOR GetList()
+    public WorkerOR GetList(bool onlyActive = true)
     {
         try
         {
-            var workers = _workerBLC.GetAllWorkers();
+            var workers = _workerBLC.GetAllWorkers(onlyActive);
             var vms = workers.Select(x => _mapper.Map<WorkerVM>(x)).ToList();
             return WorkerOR.OK(vms);
         }
