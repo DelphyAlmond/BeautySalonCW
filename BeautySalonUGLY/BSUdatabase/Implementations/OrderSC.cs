@@ -52,7 +52,8 @@ internal class OrderSC : IOrderSC
     {
         try
         {
-            var query = _dbContext.Orders.Include(o => o.Cart).AsQueryable();
+            var query = _dbContext.Orders.Include(o => o.Cart).ThenInclude(o => o.Product)
+                .Include(o => o.Worker).Include(o => o.Customer).AsQueryable();
 
             if (start is not null && end is not null) // DateTime =/= null dif.
                 query = query.Where(o => o.Date >= start && o.Date <= end);
@@ -74,8 +75,10 @@ internal class OrderSC : IOrderSC
     {
         try
         {
-            return [.. _dbContext.Orders
-                .Include(o => o.Cart)
+            return [.. _dbContext.Orders.Include(o => o.Cart)
+                .ThenInclude(c => c.Product)
+                .Include(o => o.Worker)
+                .Include(o => o.Customer)
                 .Where(o => o.Status == status && o.Date >= from && o.Date <= to)
                 .Select(o => _mapper.Map<OrderDM>(o))];
         }
@@ -167,5 +170,8 @@ internal class OrderSC : IOrderSC
     }
 
     private Order? GetOrderByID(string id) =>
-        _dbContext.Orders.Include(o => o.Cart).FirstOrDefault(o => o.ID == id); // < здесь без фильтрации на актуальность
+        _dbContext.Orders.Include(o => o.Cart).ThenInclude(c => c.Product)
+        .Include(o => o.Worker)
+        .Include(o => o.Customer)
+        .FirstOrDefault(o => o.ID == id); // < здесь без фильтрации на актуальность
 }

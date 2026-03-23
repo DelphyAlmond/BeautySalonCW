@@ -37,7 +37,10 @@ internal class VisitSC : IVisitSC
     {
         try
         {
-            IQueryable<Visit> query = _dbContext.Visits.Include(v => v.Services);
+            IQueryable<Visit> query = _dbContext.Visits.Include(v => v.Services).ThenInclude(v => v.Service)
+                .Include(v => v.Worker).Include(v => v.Master).Include(v => v.Customer);
+
+            // ^ ~.AsQueryable();
 
             // * Фильтры:
             if (start is not null && end is not null) // DateTime =/= null dif.
@@ -139,5 +142,7 @@ internal class VisitSC : IVisitSC
     }
 
     private Visit? GetVisitByID(string id) =>
-        _dbContext.Visits.Include(v => v.Services).FirstOrDefault(v => v.ID == id); // < здесь без фильтрации на актуальность
+        _dbContext.Visits.Include(v => v.Services).ThenInclude(v => v.Service)
+        .Include(v => v.Worker).Include(v => v.Master).Include(v => v.Customer).FirstOrDefault(v => v.ID == id);
+        // здесь без фильтрации на актуальность
 }

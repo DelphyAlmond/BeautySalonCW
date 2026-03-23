@@ -4,6 +4,7 @@ using BSUcontrmodels.Enums;
 
 namespace BSUcontractmodels.AdapterContracts;
 
+/*
 public interface IWorkerAdapter
 {
     // > Получить всех работников (опционально только активных)

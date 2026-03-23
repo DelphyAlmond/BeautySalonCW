@@ -14,63 +14,20 @@ namespace BSUWebAppi.Adapters;
 public class VisitAdapter : IVisitAdapter
 {
     private readonly IVisitBLC _visitBLC;
-    private readonly ICustomerBLC _customerBLC;
-    private readonly IWorkerBLC _workerBLC;
-    private readonly IServiceBLC _serviceBLC;
     private readonly ILogger<VisitAdapter> _logger;
     private readonly IMapper _mapper;
 
-    public VisitAdapter(IVisitBLC visitBLC, ICustomerBLC customerBLC, IWorkerBLC workerBLC,
-        IServiceBLC serviceBLC, ILogger<VisitAdapter> logger, IMapper mapper)
+    public VisitAdapter(IVisitBLC visitBLC, ILogger<VisitAdapter> logger, IMapper mapper)
     {
         _visitBLC = visitBLC;
-        _customerBLC = customerBLC;
-        _workerBLC = workerBLC;
-        _serviceBLC = serviceBLC;
         _logger = logger;
         _mapper = mapper;
-    }
-
-    private string? GetCustomerName(string? customerId)
-    {
-        if (string.IsNullOrEmpty(customerId)) return null;
-        try
-        {
-            return _customerBLC.GetCustomerByData(customerId)?.Username;
-        }
-        catch { return null; }
-    }
-
-    private string? GetWorkerName(string? workerId)
-    {
-        if (string.IsNullOrEmpty(workerId)) return null;
-        try
-        {
-            return _workerBLC.GetWorkerByData(workerId)?.FullName;
-        }
-        catch { return null; }
     }
 
     private VisitVM BuildVisitVM(VisitDM visitDM)
     {
         var vm = _mapper.Map<VisitVM>(visitDM);
-        vm.CustomerName = GetCustomerName(visitDM.CustomerID);
-        vm.WorkerName = GetWorkerName(visitDM.WorkerID);
-        vm.MasterName = GetWorkerName(visitDM.MasterID);
-
-        if (vm.Services != null)
-        {
-            foreach (var item in vm.Services)
-            {
-                try
-                {
-                    var service = _serviceBLC.GetServiceByData(item.ServiceID);
-                    item.ServiceName = service?.ServiceNaming ?? "Unknown";
-                    item.Price = service?.Price ?? 0;
-                }
-                catch { }
-            }
-        }
+        // [ ! ] _worker, _master и _customer уже в orderDM
         return vm;
     }
 

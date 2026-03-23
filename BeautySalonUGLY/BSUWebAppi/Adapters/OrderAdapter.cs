@@ -13,19 +13,12 @@ namespace BSUWebAppi.Adapters;
 public class OrderAdapter : IOrderAdapter
 {
     private readonly IOrderBLC _orderBLC;
-    private readonly ICustomerBLC _customerBLC;
-    private readonly IWorkerBLC _workerBLC;
-    private readonly IProductBLC _productBLC;
     private readonly ILogger<OrderAdapter> _logger;
     private readonly IMapper _mapper;
 
-    public OrderAdapter(IOrderBLC orderBLC, ICustomerBLC customerBLC, IWorkerBLC workerBLC,
-        IProductBLC productBLC, ILogger<OrderAdapter> logger, IMapper mapper)
+    public OrderAdapter(IOrderBLC orderBLC, ILogger<OrderAdapter> logger, IMapper mapper)
     {
         _orderBLC = orderBLC;
-        _customerBLC = customerBLC;
-        _workerBLC = workerBLC;
-        _productBLC = productBLC;
         _logger = logger;
         _mapper = mapper;
     }
@@ -44,30 +37,6 @@ public class OrderAdapter : IOrderAdapter
             var orderDM = _orderBLC.GetOrderByData(id);
             var vm = BuildOrderVM(orderDM);
             return OrderOR.OK(vm);
-
-            /* [ x ] [ ! ] [ ? ]
-             * Загружаем Worker и Customer один раз
-            var worker = _workerBLC.GetWorkerByData(orderDM.WorkerID);
-            var customer = _customerBLC.GetCustomerByData(orderDM.CustomerID);
-
-            * Маппируем с явной передачей данных
-            var vm = _mapper.Map<OrderVM>(orderDM);
-            vm.WorkerName = worker?.FullName;
-            vm.CustomerName = customer?.Username;
-
-            * Обогащение Cart: загружаем Product один раз через Include или в пакете
-            if (vm.Cart != null && orderDM.Cart != null)
-            {
-                var productIds = orderDM.Cart.Select(c => c.ProductID).Distinct().ToList();
-                var products = productIds.Select(pid => _productBLC.GetProductByData(pid)).ToList();
-
-                foreach (var item in vm.Cart)
-                {
-                    var product = products.FirstOrDefault(p => p?.ID == item.ProductID);
-                    item.ProductName = product?.ProductNaming ?? "Unknown";
-                    item.Price = product?.Price ?? 0;
-                }
-            }*/
         }
         catch (ArgumentNullException ex)
         {

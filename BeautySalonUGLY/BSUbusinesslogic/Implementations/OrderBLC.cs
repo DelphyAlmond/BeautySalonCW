@@ -22,25 +22,13 @@ public class OrderBLC(IOrderSC orderSC, IWorkerBLC workerBLC, ICustomerBLC custo
         var order = _orderSC.GetOByID(id) ?? throw new ElementNotFoundException(null, id);
 
         // Обогащаем данные: загружаем Worker и Customer для заполнения VM
-        if (!order.WorkerID.IsEmpty())
-        {
-            try
-            {
-                var worker = _workerBLC.GetWorkerByData(order.WorkerID);
-                // Используем рефлексию или пересоздаем объект с инициализацией полей
-                // Или переходим на более чистый подход через дополнительный конструктор OrderDM
-            }
-            catch { }
-        }
+        // if (!order.WorkerID.IsEmpty())
+        // { try
+        //     { >>
+        //        var worker = _workerBLC.GetWorkerByData(order.WorkerID);
+        //        ... [ x ]
+        // ✅ order уже обогащена из SC:
 
-        if (!order.CustomerID.IsEmpty())
-        {
-            try
-            {
-                var customer = _customerBLC.GetCustomerByData(order.CustomerID);
-            }
-            catch { }
-        }
         return order;
     }
 
