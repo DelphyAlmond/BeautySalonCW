@@ -33,7 +33,7 @@ namespace BSUWebAppi.Controllers
             return _adapter.RegisterCustomer(model).GetResponse(Request, Response);
         }
 
-        [HttpPost]
+        [HttpPut] // ~ (see product)
         public IActionResult ChangeInfo([FromBody] CustomerBM model)
         {
             return _adapter.ChangeCustomerInfo(model).GetResponse(Request, Response);

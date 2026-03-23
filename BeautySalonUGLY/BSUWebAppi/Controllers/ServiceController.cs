@@ -31,7 +31,7 @@ namespace BSUWebAppi.Controllers
             return _adapter.RegisterService(model).GetResponse(Request, Response);
         }
 
-        [HttpPost]
+        [HttpPut] // ~
         public IActionResult ChangeInfo([FromBody] ServiceBM model)
         {
             return _adapter.ChangeServiceInfo(model).GetResponse(Request, Response);

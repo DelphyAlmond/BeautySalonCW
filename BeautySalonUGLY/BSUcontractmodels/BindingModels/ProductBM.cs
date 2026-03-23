@@ -13,5 +13,7 @@ public class ProductBM
     public string? ManufacturerID { get; set; }
     public double Price { get; set; }
     public string? Description { get; set; }
-    public bool IsDeleted { get; set; }
+
+    // IsDeleted - не учитывается со стороны клиента
+    // т.к. мы (система) проставляем его сами
 }

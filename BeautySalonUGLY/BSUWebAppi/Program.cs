@@ -97,7 +97,6 @@ builder.Services.AddTransient<IVisitSC, VisitSC>();
 builder.Services.AddTransient<IWorkerSC, WorkerSC>();
 
 
-
 builder.Services.AddTransient<ICustomerAdapter, CustomerAdapter>();
 builder.Services.AddTransient<IManufacturerAdapter, ManufacturerAdapter>();
 builder.Services.AddTransient<IServiceAdapter, ServiceAdapter>();

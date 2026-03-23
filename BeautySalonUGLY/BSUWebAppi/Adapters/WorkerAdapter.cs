@@ -83,6 +83,12 @@ public class WorkerAdapter : IWorkerAdapter
     {
         try
         {
+            // > Проверка корректности диапазона дат
+            if (start > end)
+            {
+                return WorkerOR.BadRequest("< Ошибка - начальная дата не может быть позже конечной >");
+            }
+
             var workers = _workerBLC.GetAllWorkersByBDate(start, end, onlyActive);
             var vms = workers.Select(x => _mapper.Map<WorkerVM>(x)).ToList();
             return WorkerOR.OK(vms);

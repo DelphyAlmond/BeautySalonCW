@@ -8,6 +8,8 @@ public class VisitVM
     public string? OrderID { get; set; }
     public string? WorkerID { get; set; }
     public string? WorkerName { get; set; }
+    public string? MasterID { get; set; }
+    public string? MasterName { get; set; }
     public required DateTime DateReg { get; set; }
     public required DateTime DatePlanned { get; set; }
     public required List<ServUnitVisitLinkVM> Services { get; set; }

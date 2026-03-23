@@ -22,6 +22,5 @@ internal class Order
     // --------------------------------------------- *
 
     public Worker? Worker { get; set; }
-    public Worker? Master { get; set; } // *
     public Customer? Customer { get; set; }
 }

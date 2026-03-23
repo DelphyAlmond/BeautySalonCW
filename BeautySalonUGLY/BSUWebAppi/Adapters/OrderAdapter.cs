@@ -30,46 +30,10 @@ public class OrderAdapter : IOrderAdapter
         _mapper = mapper;
     }
 
-    private string? GetCustomerName(string? customerId)
-    {
-        if (string.IsNullOrEmpty(customerId)) return null;
-        try
-        {
-            return _customerBLC.GetCustomerByData(customerId)?.Username;
-        }
-        catch { return null; }
-    }
-
-    private string? GetWorkerName(string? workerId)
-    {
-        if (string.IsNullOrEmpty(workerId)) return null;
-        try
-        {
-            return _workerBLC.GetWorkerByData(workerId)?.FullName;
-        }
-        catch { return null; }
-    }
-
     private OrderVM BuildOrderVM(OrderDM orderDM)
     {
         var vm = _mapper.Map<OrderVM>(orderDM);
-        vm.CustomerName = GetCustomerName(orderDM.CustomerID);
-        vm.WorkerName = GetWorkerName(orderDM.WorkerID);
-        vm.MasterName = GetWorkerName(orderDM.MasterID);
-
-        if (vm.Cart != null)
-        {
-            foreach (var item in vm.Cart)
-            {
-                try
-                {
-                    var product = _productBLC.GetProductByData(item.ProductID);
-                    item.ProductName = product?.ProductNaming ?? "Unknown";
-                    item.Price = product?.Price ?? 0;
-                }
-                catch { }
-            }
-        }
+        // [ ! ] _worker и _customer уже в orderDM
         return vm;
     }
 
@@ -78,8 +42,32 @@ public class OrderAdapter : IOrderAdapter
         try
         {
             var orderDM = _orderBLC.GetOrderByData(id);
-            var orderVM = BuildOrderVM(orderDM);
-            return OrderOR.OK(orderVM);
+            var vm = BuildOrderVM(orderDM);
+            return OrderOR.OK(vm);
+
+            /* [ x ] [ ! ] [ ? ]
+             * Загружаем Worker и Customer один раз
+            var worker = _workerBLC.GetWorkerByData(orderDM.WorkerID);
+            var customer = _customerBLC.GetCustomerByData(orderDM.CustomerID);
+
+            * Маппируем с явной передачей данных
+            var vm = _mapper.Map<OrderVM>(orderDM);
+            vm.WorkerName = worker?.FullName;
+            vm.CustomerName = customer?.Username;
+
+            * Обогащение Cart: загружаем Product один раз через Include или в пакете
+            if (vm.Cart != null && orderDM.Cart != null)
+            {
+                var productIds = orderDM.Cart.Select(c => c.ProductID).Distinct().ToList();
+                var products = productIds.Select(pid => _productBLC.GetProductByData(pid)).ToList();
+
+                foreach (var item in vm.Cart)
+                {
+                    var product = products.FirstOrDefault(p => p?.ID == item.ProductID);
+                    item.ProductName = product?.ProductNaming ?? "Unknown";
+                    item.Price = product?.Price ?? 0;
+                }
+            }*/
         }
         catch (ArgumentNullException ex)
         {

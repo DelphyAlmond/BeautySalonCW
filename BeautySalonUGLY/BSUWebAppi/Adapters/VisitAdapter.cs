@@ -6,6 +6,7 @@ using BSUcontractmodels.BusinessLogicContracts;
 using BSUcontractmodels.Exceptions;
 using BSUcontractmodels.ViewModels;
 using BSUcontrmodels.DataModels;
+using BSUdatabase.DBModels;
 using BSUmodels.Exceptions;
 
 namespace BSUWebAppi.Adapters;
@@ -55,6 +56,7 @@ public class VisitAdapter : IVisitAdapter
         var vm = _mapper.Map<VisitVM>(visitDM);
         vm.CustomerName = GetCustomerName(visitDM.CustomerID);
         vm.WorkerName = GetWorkerName(visitDM.WorkerID);
+        vm.MasterName = GetWorkerName(visitDM.MasterID);
 
         if (vm.Services != null)
         {

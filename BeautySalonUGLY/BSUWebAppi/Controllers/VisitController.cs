@@ -26,7 +26,7 @@ namespace BSUWebAppi.Controllers
             return _adapter.RegisterVisit(model).GetResponse(Request, Response);
         }
 
-        [HttpPut]
+        [HttpPut] // ~
         public IActionResult UpdateVisit([FromBody] VisitBM model)
         {
             return _adapter.UpdateVisit(model).GetResponse(Request, Response);
@@ -39,6 +39,7 @@ namespace BSUWebAppi.Controllers
         }
 
         // Фильтрация
+
         [HttpGet("by-date")]
         public IActionResult GetVisitsByDateGap([FromQuery] DateTime from, [FromQuery] DateTime to)
         {

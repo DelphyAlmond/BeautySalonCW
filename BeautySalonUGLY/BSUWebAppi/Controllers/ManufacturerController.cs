@@ -31,7 +31,7 @@ namespace BSUWebAppi.Controllers
             return _adapter.RegisterManufacturer(model).GetResponse(Request, Response);
         }
 
-        [HttpPost]
+        [HttpPut] // ~
         public IActionResult ChangeInfo([FromBody] ManufacturerBM model)
         {
             return _adapter.ChangeManufacturerInfo(model).GetResponse(Request, Response);

@@ -23,6 +23,10 @@ internal class ProductSC : IProductSC
             // которые на данный момент актуальны и НЕ удалены, поэтому + фильтрация:
             cfg.CreateMap<ProductDM, Product>().ForMember(x => x.IsDeleted,
                                                           x => x.MapFrom(src => false));
+            // [ + ]
+            cfg.CreateMap<Manufacturer, ManufacturerDM>();
+            // > Теперь можем вместе с самим изделием -> цеплять производителя
+
         }, NullLoggerFactory.Instance);
         _mapper = new Mapper(config);
     }
@@ -34,8 +38,7 @@ internal class ProductSC : IProductSC
             // По принципу отложенного запроса
             // (постепенно формируется выборка за счёт фильтров):
 
-            // IQueryable<Product> query = _dbContext.Products; или
-            var query = _dbContext.Products.AsQueryable();
+            var query = _dbContext.Products.Include(m => m.Manufacturer).AsQueryable();
 
             if (onlyActive) query = query.Where(p => !p.IsDeleted);
             if (!manufacturerID.IsEmpty())
@@ -68,7 +71,7 @@ internal class ProductSC : IProductSC
         try
         {
             return _mapper.Map<ProductDM>(
-                _dbContext.Products.FirstOrDefault(p => p.ProductNaming == name && !p.IsDeleted));
+                _dbContext.Products.Include(m => m.Manufacturer).FirstOrDefault(p => p.ProductNaming == name && !p.IsDeleted));
         }
         catch (Exception ex)
         {
@@ -140,5 +143,5 @@ internal class ProductSC : IProductSC
     }
 
     private Product? GetProductByID(string id) =>
-        _dbContext.Products.FirstOrDefault(p => p.ID == id && !p.IsDeleted);
+        _dbContext.Products.Include(m => m.Manufacturer).FirstOrDefault(p => p.ID == id && !p.IsDeleted);
 }

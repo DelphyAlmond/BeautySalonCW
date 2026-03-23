@@ -23,6 +23,7 @@ internal class Visit
     // --------------------------------------------- *
 
     public Worker? Worker { get; set; }
+    public Worker? Master { get; set; } // *
     public Customer? Customer { get; set; }
     public Order? Order { get; set; }
 }

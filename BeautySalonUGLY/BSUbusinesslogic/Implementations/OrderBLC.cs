@@ -1,4 +1,5 @@
-﻿using BSUcontractmodels.BusinessLogicContracts;
+﻿using BSUcontractmodels.BindingModels;
+using BSUcontractmodels.BusinessLogicContracts;
 using BSUcontractmodels.Exceptions;
 using BSUcontractmodels.StoragesContracts;
 using BSUcontrmodels.DataModels;
@@ -7,9 +8,41 @@ using BSUmodels.Extensions;
 
 namespace BSUbusinesslogic.Implementations;
 
-public class OrderBLC(IOrderSC orderSC) : IOrderBLC
+public class OrderBLC(IOrderSC orderSC, IWorkerBLC workerBLC, ICustomerBLC customerBLC) : IOrderBLC
 {
     private readonly IOrderSC _orderSC = orderSC;
+
+    private readonly IWorkerBLC _workerBLC = workerBLC;
+    private readonly ICustomerBLC _customerBLC = customerBLC;
+
+    // > возвращает OrderDM с загруженными Worker и Customer
+    // [ ! ] для обогащения данных перед маппингом в ViewModel
+    public OrderDM GetOrderByDataEnriched(string id)
+    {
+        var order = _orderSC.GetOByID(id) ?? throw new ElementNotFoundException(null, id);
+
+        // Обогащаем данные: загружаем Worker и Customer для заполнения VM
+        if (!order.WorkerID.IsEmpty())
+        {
+            try
+            {
+                var worker = _workerBLC.GetWorkerByData(order.WorkerID);
+                // Используем рефлексию или пересоздаем объект с инициализацией полей
+                // Или переходим на более чистый подход через дополнительный конструктор OrderDM
+            }
+            catch { }
+        }
+
+        if (!order.CustomerID.IsEmpty())
+        {
+            try
+            {
+                var customer = _customerBLC.GetCustomerByData(order.CustomerID);
+            }
+            catch { }
+        }
+        return order;
+    }
 
     // все заказы за указанный период (без дополнительных фильтров)
     public List<OrderDM> GetAllOrdersByDateGap(DateTime from, DateTime to)

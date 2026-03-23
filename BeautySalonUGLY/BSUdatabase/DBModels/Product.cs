@@ -15,7 +15,7 @@ internal class Product
 
     // --------------------------------------------- *
 
-    public Manufacturer? Manufacturer { get; set; }
+    public Manufacturer? Manufacturer { get; set; } // < +
 
     [ForeignKey("ProductID")]
     public List<ProductOrder>? UnitsInOrder { get; set; }

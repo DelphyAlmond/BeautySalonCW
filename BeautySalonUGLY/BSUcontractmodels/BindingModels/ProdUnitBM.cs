@@ -5,7 +5,11 @@ namespace BSUcontractmodels.BindingModels;
 
 public class ProdUnitBM
 {
-    // [ x ] OrderID, т.к. определяется родительским заказом
+    // [ ? ] OrderID - определяется родительским заказом
+    public string? OrderID { get; set; }
+
     public string? ProductID { get; set; }
     public int Count { get; set; }
+
+    public double Price { get; set; }
 }

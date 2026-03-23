@@ -17,18 +17,31 @@ internal class OrderSC : IOrderSC
         _dbContext = context;
         var config = new MapperConfiguration(cfg =>
         {
-            cfg.CreateMap<Order, OrderDM>();
+            cfg.CreateMap<Order, OrderDM>()
+            .ConstructUsing(src => new OrderDM(
+                src.ID,
+                src.CustomerID,
+                src.WorkerID,
+                src.Cart.Select(link => _mapper.Map<ProdUnitOrderLinkDM>(link)).ToList(),
+                src.Discount,
+                src.Status,
+                src.Summ,
+                _mapper.Map<WorkerDM>(src.Worker),
+                _mapper.Map<CustomerDM>(src.Customer)
+            ));
             cfg.CreateMap<OrderDM, Order>()
             .ForMember(x => x.Status, x => x.MapFrom(src => OrderStatus.Placed))
             .ForMember(dest => dest.Cart, opt => opt.MapFrom(src => src.Cart))
-            .AfterMap((src, dest) => // [ * ] not neccessary
+            .AfterMap((src, dest) =>
             {
                 if (dest.Cart != null)
                     foreach (var item in dest.Cart)
                         item.OrderID = dest.ID;
             });
 
-            cfg.CreateMap<ProductOrder, ProdUnitOrderLinkDM>();
+            cfg.CreateMap<ProductOrder, ProdUnitOrderLinkDM>()
+             .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductNaming))
+             .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Product.Price));
             cfg.CreateMap<ProdUnitOrderLinkDM, ProductOrder>();
 
         }, NullLoggerFactory.Instance);

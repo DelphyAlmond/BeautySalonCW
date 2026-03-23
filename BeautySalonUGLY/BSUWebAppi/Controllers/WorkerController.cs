@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BSUWebAppi.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     [Produces("application/json")]
     public class WorkerController(IWorkerAdapter adapter) : ControllerBase
@@ -20,19 +20,19 @@ namespace BSUWebAppi.Controllers
             return _adapter.GetList(onlyActive).GetResponse(Request, Response);
         }
 
-        [HttpPost("{data}")]
+        [HttpGet("{data}")] // insteat of HttpPost *
         public IActionResult GetRecord(string data)
         {
             return _adapter.GetElement(data).GetResponse(Request, Response);
         }
 
-        [HttpGet("by-post/{postType}")]
+        [HttpGet] // without -("by-post/{postType}") *
         public IActionResult GetByPost(Post postType, [FromQuery] bool onlyActive = true)
         {
             return _adapter.GetByPost(postType, onlyActive).GetResponse(Request, Response);
         }
 
-        [HttpGet("by-birthdate")]
+        [HttpGet] // without -("by-birthdate") *
         public IActionResult GetByBirthDate([FromQuery] DateTime start, [FromQuery] DateTime end, [FromQuery] bool onlyActive = true)
         {
             return _adapter.GetByBirthDate(start, end, onlyActive).GetResponse(Request, Response);
@@ -44,7 +44,7 @@ namespace BSUWebAppi.Controllers
             return _adapter.RegisterWorker(model).GetResponse(Request, Response);
         }
 
-        [HttpPost]
+        [HttpPut] // ~
         public IActionResult ChangeInfo([FromBody] WorkerBM model)
         {
             return _adapter.ChangeWorkerInfo(model).GetResponse(Request, Response);

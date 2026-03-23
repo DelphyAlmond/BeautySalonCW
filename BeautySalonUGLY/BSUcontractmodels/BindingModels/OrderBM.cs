@@ -18,8 +18,8 @@ public class OrderBM
     public string? ID { get; set; }
     public string? CustomerID { get; set; }
     public string? WorkerID { get; set; }
-    public string? MasterID { get; set; }
-    public DateTime Date { get; set; }
+
+    // * left for us, kept inside system: public DateTime DateTime Date { get; set; }
 
     // ID в Binding Models - nullable,
     // чтобы различать создание (null) и обновление (задан).
@@ -27,8 +27,8 @@ public class OrderBM
     // - в адаптере они будут преобразованы в соответствующие
     // Data Models (ProdUnitOrderLinkDM \ ServUnitVisitLinkDM)
 
-    public List<ProdUnitBM>? Cart { get; set; } // ← не DM
-    public double Summ { get; set; }
+    public List<ProdUnitBM>? Cart { get; set; }
+
     public double Discount { get; set; }
-    public OrderStatus Status { get; set; }
+    public int Status { get; set; } // enum allows *
 }

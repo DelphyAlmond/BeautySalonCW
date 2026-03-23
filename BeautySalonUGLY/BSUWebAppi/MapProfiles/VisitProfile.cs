@@ -23,6 +23,7 @@ public class VisitProfile : Profile
         CreateMap<VisitDM, VisitVM>()
             .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.Services))
             .ForMember(dest => dest.CustomerName, opt => opt.Ignore())
-            .ForMember(dest => dest.WorkerName, opt => opt.Ignore());
+            .ForMember(dest => dest.WorkerName, opt => opt.Ignore())
+            .ForMember(dest => dest.MasterName, opt => opt.Ignore()); // < [ + ] *
     }
 }

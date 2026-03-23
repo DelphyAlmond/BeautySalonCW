@@ -5,9 +5,9 @@ namespace BSUcontractmodels.AdapterContracts;
 
 public interface IProductAdapter
 {
-    ProductOR GetList();
+    ProductOR GetList(bool includeDelted);
     ProductOR GetElement(string id);
-    ProductOR GetByManufacturer(string manufacturerId); // << extra
+    ProductOR GetByManufacturer(string manufacturerId, bool includeDelted); // << extra
     ProductOR RegisterProduct(ProductBM model);
     ProductOR ChangeProductInfo(ProductBM model);
     ProductOR RemoveProduct(string id);

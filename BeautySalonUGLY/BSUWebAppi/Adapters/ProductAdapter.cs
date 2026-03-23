@@ -23,11 +23,11 @@ public class ProductAdapter : IProductAdapter
         _mapper = mapper;
     }
 
-    public ProductOR GetList()
+    public ProductOR GetList(bool includeDelted) // < +
     {
         try
         {
-            var products = _productBLC.GetAllProducts(false);
+            var products = _productBLC.GetAllProducts(!includeDelted);
             var vms = products.Select(x => _mapper.Map<ProductVM>(x)).ToList();
             return ProductOR.OK(vms);
         }
@@ -78,11 +78,11 @@ public class ProductAdapter : IProductAdapter
     }
 
     // [ + ] получение продуктов по производителю
-    public ProductOR GetByManufacturer(string manufacturerId)
+    public ProductOR GetByManufacturer(string manufacturerId, bool includeDelted) // < +
     {
         try
         {
-            var products = _productBLC.GetAllProductsByManufacturer(manufacturerId, false);
+            var products = _productBLC.GetAllProductsByManufacturer(manufacturerId, !includeDelted);
             var vms = products.Select(x => _mapper.Map<ProductVM>(x)).ToList();
             return ProductOR.OK(vms);
         }
