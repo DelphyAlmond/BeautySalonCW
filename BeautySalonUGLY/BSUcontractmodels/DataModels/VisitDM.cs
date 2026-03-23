@@ -1,8 +1,6 @@
-﻿using BSUcontrmodels.Enums;
-using BSUcontrmodels.Infrastructure;
+﻿using BSUcontrmodels.Infrastructure;
 using BSUmodels.Exceptions;
 using BSUmodels.Extensions;
-using System.Net.NetworkInformation;
 
 namespace BSUcontrmodels.DataModels;
 

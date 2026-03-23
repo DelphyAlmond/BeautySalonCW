@@ -7,7 +7,8 @@ internal class Visit
     public required string ID { get; set; }
     public required string CustomerID { get; set; }
     public string? OrderID { get; set; }
-    public required string WorkerID { get; set; } // [ * ] the master as well
+    public required string WorkerID { get; set; }
+    public required string MasterID { get; set; } // [ + ] the master, devided
     public required DateTime DateReg { get; set; }
     public required DateTime DatePlanned { get; set; }
 

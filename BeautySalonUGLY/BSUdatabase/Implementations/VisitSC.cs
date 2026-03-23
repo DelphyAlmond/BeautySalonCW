@@ -19,7 +19,22 @@ internal class VisitSC : IVisitSC
             cfg.CreateMap<ServiceVisit, ServUnitVisitLinkDM>();
             cfg.CreateMap<ServUnitVisitLinkDM, ServiceVisit>();
 
-            cfg.CreateMap<Visit, VisitDM>();
+            cfg.CreateMap<Visit, VisitDM>()
+             .ConstructUsing(src => new VisitDM(
+                    src.ID,
+                    src.CustomerID,
+                    src.OrderID,
+                    src.WorkerID,
+                    src.MasterID,
+                    src.DatePlanned,
+                    src.Services.Select(link => _mapper.Map<ServUnitVisitLinkDM>(link)).ToList(),
+                    src.Discount,
+                    src.IsCanceled,
+                    src.Summ,
+                    _mapper.Map<WorkerDM>(src.Worker),
+                    _mapper.Map<WorkerDM>(src.Master),
+                    _mapper.Map<CustomerDM>(src.Customer)
+             ));
             cfg.CreateMap<VisitDM, Visit>()
             .ForMember(x => x.IsCanceled, x => x.MapFrom(src => false))
             .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.Services))
