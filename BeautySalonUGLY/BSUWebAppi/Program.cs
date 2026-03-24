@@ -118,6 +118,7 @@ builder.Services.AddTransient<IReportAdapter, ReportAdapter>();
 builder.Services.AddTransient<IReportBLC, ReportBLC>();
 builder.Services.AddTransient<IReportDocumentBLC, ReportDocumentBLC>();
 builder.Services.AddTransient<IWordBuilder, WordReportBuilder>();
+builder.Services.AddTransient<IEmailSenderBLC, EmailSenderBLC>();
 
 app.UseHttpsRedirection();
 

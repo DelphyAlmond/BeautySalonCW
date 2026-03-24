@@ -53,5 +53,22 @@ namespace BSUWebAppi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        /// Сформировать отчёт по посещениям мастера и отправить на email
+        [HttpPost("master-visits/send-email")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SendMasterVisitsReportViaEmail(
+            [FromQuery] string masterID,
+            [FromQuery] DateTime dateFrom,
+            [FromQuery] DateTime dateTo,
+            [FromQuery] string toEmail,
+            CancellationToken ct)
+        {
+            var result = await _repAdapter.GenerateAndSendReportViaEmailAsync(masterID, dateFrom, dateTo, toEmail, ct);
+            return result.GetResponse(Request, Response);
+        }
     }
 }

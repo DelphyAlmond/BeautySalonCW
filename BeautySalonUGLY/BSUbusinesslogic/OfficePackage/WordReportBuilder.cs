@@ -13,9 +13,7 @@ public class WordReportBuilder : IWordBuilder
     private readonly List<string> _paragraphs = new();
     private readonly List<(int[], List<string[]>)> _tables = new();
 
-    /// <summary>
     /// Добавить заголовок в отчёт
-    /// </summary>
     public override IWordBuilder AddHeader(string header)
     {
         if (!string.IsNullOrWhiteSpace(header))
@@ -25,21 +23,16 @@ public class WordReportBuilder : IWordBuilder
         return this;
     }
 
-    /// <summary>
     /// Добавить параграф текста в отчёт
-    /// </summary>
     public override IWordBuilder AddParagraph(string text)
     {
-        if (!string.IsNullOrWhiteSpace(text))
-        {
-            _paragraphs.Add(text);
-        }
+        // Добавляем даже пустые параграфы для создания визуального разделения
+        _paragraphs.Add(text ?? string.Empty);
         return this;
     }
 
-    /// <summary>
+
     /// Добавить таблицу в отчёт
-    /// </summary>
     /// <param name="widths">Массив ширин столбцов в процентах</param>
     /// <param name="data">Список массивов строк (каждый массив - одна строка таблицы)</param>
     public override IWordBuilder AddTable(int[] widths, List<string[]> data)
@@ -131,20 +124,23 @@ public class WordReportBuilder : IWordBuilder
     private static Paragraph CreateRegularParagraph(string text)
     {
         var paragraph = new Paragraph();
-        var run = new Run();
-
-        var runProperties = new RunProperties();
-        runProperties.AppendChild(new FontSize { Val = "22" }); // 11pt
-
-        run.AppendChild(runProperties);
-        run.AppendChild(new Text(text) { Space = SpaceProcessingModeValues.Preserve });
-
-        paragraph.AppendChild(run);
 
         var paragraphProperties = new ParagraphProperties();
         paragraphProperties.AppendChild(new SpacingBetweenLines { After = "100" });
+        paragraph.AppendChild(paragraphProperties);
 
-        paragraph.InsertBefore(paragraphProperties, paragraph.FirstChild);
+        // Если текст не пуст, добавляем его
+        if (!string.IsNullOrEmpty(text))
+        {
+            var run = new Run();
+            var runProperties = new RunProperties();
+            runProperties.AppendChild(new FontSize { Val = "22" }); // 11pt
+
+            run.AppendChild(runProperties);
+            run.AppendChild(new Text(text) { Space = SpaceProcessingModeValues.Preserve });
+
+            paragraph.AppendChild(run);
+        }
 
         return paragraph;
     }

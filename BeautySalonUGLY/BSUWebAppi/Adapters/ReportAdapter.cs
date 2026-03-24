@@ -98,4 +98,54 @@ public class ReportAdapter(IReportBLC reportBLC, IReportDocumentBLC reportDocBLC
             throw;
         }
     }
+
+    /// Сформировать отчёт и отправить на email
+    public async Task<ReportOR> GenerateAndSendReportViaEmailAsync(string masterID, DateTime dateFrom, DateTime dateTo, string toEmail, CancellationToken ct)
+    {
+        try
+        {
+            // Валидация входных данных
+            if (dateFrom > dateTo)
+                return ReportOR.BadRequest("< Ошибка - начальная дата не может быть позже конечной >");
+
+            if (string.IsNullOrWhiteSpace(toEmail))
+                return ReportOR.BadRequest("< Ошибка - email адрес не указан >");
+
+            // Отправляем отчёт через BLC
+            var result = await _reportBLC.GenerateAndSendReportAsync(masterID, dateFrom, dateTo, toEmail, ct);
+
+             if (result)
+            {
+                _logger.LogInformation($"Report sent successfully to {toEmail} for master {masterID}");
+                return ReportOR.NoContent();
+            }
+
+            return ReportOR.InternalServerError("Ошибка при отправке отчёта на email");
+        }
+        catch (ValidationException ex)
+        {
+            _logger.LogError(ex, "ValidationException");
+            return ReportOR.BadRequest($"< Ошибка валидации: {ex.Message} >");
+        }
+        catch (ElementNotFoundException ex)
+        {
+            _logger.LogError(ex, "ElementNotFoundException");
+            return ReportOR.NotFound($"< Мастер с ID: {masterID} - не найден >");
+        }
+        catch (NullListException)
+        {
+            _logger.LogError("NullListException");
+            return ReportOR.NotFound("< Ошибка - посещения для указанного периода не найдены >");
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError(ex, "InvalidOperationException");
+            return ReportOR.InternalServerError($"< Ошибка конфигурации: {ex.Message} >");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Exception");
+            return ReportOR.InternalServerError($"< Ошибка при отправке отчёта: {ex.Message} >");
+        }
+    }
 }

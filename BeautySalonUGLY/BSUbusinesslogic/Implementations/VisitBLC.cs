@@ -26,6 +26,16 @@ public class VisitBLC(IVisitSC visitSC) : IVisitBLC
         return _visitSC.GetVisitsByDateGap(from, to, workerID, null, null);
     }
 
+    public async Task<List<VisitDM>> GetAllVisitsByMasterAsync(string workerID, DateTime from, DateTime to)
+    {
+        if (workerID.IsEmpty())
+            throw new ValidationException("< Visit BLC: WorkerID is empty >");
+        if (!workerID.IsGuid())
+            throw new ValidationException("< Visit BLC: WorkerID is not valid GUID >");
+
+        return await Task.Run(() => _visitSC.GetVisitsByDateGap(from, to, workerID, null, null));
+    }
+
     public List<VisitDM> GetAllVisitsByCustomer(string customerID, DateTime from, DateTime to)
     {
         if (customerID.IsEmpty())

@@ -12,6 +12,7 @@ namespace BSUcontractmodels.Infrastructure;
 
 public class OperationResponse
 {
+    protected string? FileName { get; set; }
     protected HttpStatusCode StatusCode { get; set; }
     protected object? Result { get; set; }
 
@@ -33,6 +34,13 @@ public class OperationResponse
         {
             return new StatusCodeResult((int)StatusCode);
         }
+        if (Result is Stream strm)
+        {
+            return new FileStreamResult(strm, "application/octet-stream")
+            {
+                FileDownloadName = FileName + $"_{DateTime.Now:yyyyMMdd_HHmmss}.docx"
+            };
+        }
 
         return new ObjectResult(Result);
     }
@@ -45,6 +53,14 @@ public class OperationResponse
         new() {
             StatusCode = HttpStatusCode.OK,
             Result = data
+        };
+
+    protected static TResult OK<TResult>(Stream data, string fileName) where TResult : OperationResponse, new() =>
+        new()
+        {
+            StatusCode = HttpStatusCode.OK,
+            Result = data,
+            FileName = fileName
         };
 
     protected static TResult NoContent<TResult>() where TResult : OperationResponse, new() =>
