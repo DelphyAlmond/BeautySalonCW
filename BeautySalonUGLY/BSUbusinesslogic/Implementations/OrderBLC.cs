@@ -8,12 +8,9 @@ using BSUmodels.Extensions;
 
 namespace BSUbusinesslogic.Implementations;
 
-public class OrderBLC(IOrderSC orderSC, IWorkerBLC workerBLC, ICustomerBLC customerBLC) : IOrderBLC
+public class OrderBLC(IOrderSC orderSC) : IOrderBLC
 {
     private readonly IOrderSC _orderSC = orderSC;
-
-    private readonly IWorkerBLC _workerBLC = workerBLC;
-    private readonly ICustomerBLC _customerBLC = customerBLC;
 
     // > возвращает OrderDM с загруженными Worker и Customer
     // [ ! ] для обогащения данных перед маппингом в ViewModel

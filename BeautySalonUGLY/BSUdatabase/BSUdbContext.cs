@@ -4,9 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BSUdatabase;
 
-internal class BSUdbContext(IConfigurationDatabase confDB) : DbContext
+internal class BSUdbContext : DbContext
 {
-    private readonly IConfigurationDatabase? _configDB = confDB;
+    private readonly IConfigurationDatabase? _configDB;
+
+    public BSUdbContext(IConfigurationDatabase configurationDatabase)
+    {
+        _configDB = configurationDatabase;
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+    }
 
     // Подкл. к БД-х:
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

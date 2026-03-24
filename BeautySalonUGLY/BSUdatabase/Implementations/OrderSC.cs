@@ -44,6 +44,9 @@ internal class OrderSC : IOrderSC
              .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Product.Price));
             cfg.CreateMap<ProdUnitOrderLinkDM, ProductOrder>();
 
+            cfg.CreateMap<Product, ProductDM>();
+            cfg.CreateMap<Manufacturer, ManufacturerDM>();
+
         }, NullLoggerFactory.Instance);
         _mapper = new Mapper(config);
     }

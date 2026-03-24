@@ -1,13 +1,16 @@
 using BSUbusinesslogic.Implementations;
+using BSUbusinesslogic.OfficePackage;
 using BSUcontractmodels.AdapterContracts;
 using BSUcontractmodels.BusinessLogicContracts;
 using BSUcontractmodels.Infrastructure;
+using BSUcontractmodels.OfficePackage;
 using BSUcontractmodels.StoragesContracts;
 using BSUdatabase;
 using BSUdatabase.Implementations;
 using BSUWebAppi;
 using BSUWebAppi.Adapters;
 using BSUWebAppi.InfrastructureDB;
+using BSUWebAppi.MapProfiles;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,6 +54,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+// 1.* AutoMapper : VM <-> DM
+builder.Services.AddAutoMapper(cfg => 
+{
+    cfg.AddProfile<ReportProfile>();
+});
 
 var app = builder.Build();
 
@@ -104,6 +113,11 @@ builder.Services.AddTransient<IProductAdapter, ProductAdapter>();
 builder.Services.AddTransient<IOrderAdapter, OrderAdapter>();
 builder.Services.AddTransient<IVisitAdapter, VisitAdapter>();
 builder.Services.AddTransient<IWorkerAdapter, WorkerAdapter>();
+
+builder.Services.AddTransient<IReportAdapter, ReportAdapter>();
+builder.Services.AddTransient<IReportBLC, ReportBLC>();
+builder.Services.AddTransient<IReportDocumentBLC, ReportDocumentBLC>();
+builder.Services.AddTransient<IWordBuilder, WordReportBuilder>();
 
 app.UseHttpsRedirection();
 

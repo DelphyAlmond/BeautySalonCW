@@ -44,6 +44,9 @@ internal class VisitSC : IVisitSC
                     foreach (var item in dest.Services)
                         item.VisitID = dest.ID;
             });
+
+            cfg.CreateMap<Service, ServiceDM>();
+
         }, NullLoggerFactory.Instance);
         _mapper = new Mapper(config);
     }
