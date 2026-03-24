@@ -10,8 +10,9 @@ namespace BSUWebAppi.Controllers
     {
         private readonly IReportAdapter _repAdapter = repAdapter;
 
-        /// Получить отчёт по посещениям мастера за период (JSON)
+        /// Получить отчёт по посещениям мастера за период в формате JSON
         [HttpGet("master-visits")]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -28,6 +29,7 @@ namespace BSUWebAppi.Controllers
 
         /// Получить отчёт по посещениям мастера в формате Word (.docx)
         [HttpGet("master-visits/word")]
+        [Produces("application/vnd.openxmlformats-officedocument.wordprocessingml.document")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -38,25 +40,15 @@ namespace BSUWebAppi.Controllers
             [FromQuery] DateTime dateTo,
             CancellationToken ct)
         {
-            try
-            {
-                var (stream, fileName) = await _repAdapter.GetMasterVisitsReportWordAsync(masterID, dateFrom, dateTo, ct);
-
-                return File(
-                    stream,
-                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    fileName
-                );
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            var result = await _repAdapter.GetMasterVisitsReportWordAsync(masterID, dateFrom, dateTo, ct);
+            return result.GetResponse(Request, Response);
         }
 
         /// Сформировать отчёт по посещениям мастера и отправить на email
         [HttpPost("master-visits/send-email")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
