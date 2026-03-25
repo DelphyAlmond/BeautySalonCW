@@ -1,4 +1,4 @@
-using BSUbusinesslogic.Implementations;
+п»їusing BSUbusinesslogic.Implementations;
 using BSUbusinesslogic.OfficePackage;
 using BSUcontractmodels.AdapterContracts;
 using BSUcontractmodels.BusinessLogicContracts;
@@ -16,37 +16,38 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// 0. Установка логгера
+// 0. РЈСЃС‚Р°РЅРѕРІРєР° Р»РѕРіРіРµСЂР°
 using var loggerFactory = new LoggerFactory();
 loggerFactory.AddSerilog(new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger());
 builder.Services.AddSingleton(loggerFactory.CreateLogger("Any"));
 // edit the appsettings.json next further [ * ]
 
-// 1.* настройка аутентификации
+// 1.* РЅР°СЃС‚СЂРѕР№РєР° Р°СѓС‚РµРЅС‚РёС„РёРєР°С†РёРё
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
  .AddJwtBearer(options =>
  {
     options.TokenValidationParameters = new TokenValidationParameters
     { 
-    // указывает, будет ли валидироваться издатель при валидации токена
+    // СѓРєР°Р·С‹РІР°РµС‚, Р±СѓРґРµС‚ Р»Рё РІР°Р»РёРґРёСЂРѕРІР°С‚СЊСЃСЏ РёР·РґР°С‚РµР»СЊ РїСЂРё РІР°Р»РёРґР°С†РёРё С‚РѕРєРµРЅР°
     ValidateIssuer = true, 
-    // строка, представляющая издателя 
+    // СЃС‚СЂРѕРєР°, РїСЂРµРґСЃС‚Р°РІР»СЏСЋС‰Р°СЏ РёР·РґР°С‚РµР»СЏ 
     ValidIssuer = AuthOptions.ISSUER, 
-    // будет ли валидироваться потребитель токена 
+    // Р±СѓРґРµС‚ Р»Рё РІР°Р»РёРґРёСЂРѕРІР°С‚СЊСЃСЏ РїРѕС‚СЂРµР±РёС‚РµР»СЊ С‚РѕРєРµРЅР° 
     ValidateAudience = true, 
-    // установка потребителя токена 
+    // СѓСЃС‚Р°РЅРѕРІРєР° РїРѕС‚СЂРµР±РёС‚РµР»СЏ С‚РѕРєРµРЅР° 
     ValidAudience = AuthOptions.AUDIENCE, 
-    // будет ли валидироваться время существования 
+    // Р±СѓРґРµС‚ Р»Рё РІР°Р»РёРґРёСЂРѕРІР°С‚СЊСЃСЏ РІСЂРµРјСЏ СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёСЏ 
     ValidateLifetime = true, 
-    // установка ключа безопасности 
+    // СѓСЃС‚Р°РЅРѕРІРєР° РєР»СЋС‡Р° Р±РµР·РѕРїР°СЃРЅРѕСЃС‚Рё 
     IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(), 
-    // валидация ключа безопасности 
+    // РІР°Р»РёРґР°С†РёСЏ РєР»СЋС‡Р° Р±РµР·РѕРїР°СЃРЅРѕСЃС‚Рё 
     ValidateIssuerSigningKey = true,
     };
 });
@@ -63,8 +64,8 @@ builder.Services.AddAutoMapper(cfg =>
 
 var app = builder.Build();
 
-// 2.* настройка БД
-// Configure the HTTP request pipeline. (для тестов)
+// 2.* РЅР°СЃС‚СЂРѕР№РєР° Р‘Р”
+// Configure the HTTP request pipeline. (РґР»СЏ С‚РµСЃС‚РѕРІ)
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -74,7 +75,7 @@ if (app.Environment.IsDevelopment())
 //        < InternalsVisibleTo Include = "BSUWebAppi" />
 // </ ItemGroup >
 
-// (для проды и миграций)
+// (РґР»СЏ РїСЂРѕРґС‹ Рё РјРёРіСЂР°С†РёР№)
 if (app.Environment.IsProduction())
 {
     var dbContext = app.Services.GetRequiredService<BSUdbContext>();
@@ -85,7 +86,7 @@ if (app.Environment.IsProduction())
     }
 }
 
-// 3. этап создания ioc-ра и связки контрактов-реализаций
+// 3. СЌС‚Р°Рї СЃРѕР·РґР°РЅРёСЏ ioc-СЂР° Рё СЃРІСЏР·РєРё РєРѕРЅС‚СЂР°РєС‚РѕРІ-СЂРµР°Р»РёР·Р°С†РёР№
 builder.Services.AddSingleton<IConfigurationDatabase, ConfigurationDB>();
 
 builder.Services.AddTransient<ICustomerBLC, CustomerBLC>();
@@ -120,18 +121,26 @@ builder.Services.AddTransient<IReportDocumentBLC, ReportDocumentBLC>();
 builder.Services.AddTransient<IWordBuilder, WordReportBuilder>();
 builder.Services.AddTransient<IEmailSenderBLC, EmailSenderBLC>();
 
+builder.Services.AddTransient<IAuthenticationBLC, AuthenticationBLC>();
+builder.Services.AddTransient<IUserSC, UserSC>();
+
+// 4. Р РµРіРёСЃС‚СЂР°С†РёСЏ СЃРµСЂРІРёСЃРѕРІ Р°СѓС‚РµРЅС‚РёС„РёРєР°С†РёРё
+builder.Services.AddTransient<IAuthenticationBLC, AuthenticationBLC>();
+builder.Services.AddTransient<IUserSC, UserSC>();
+
 app.UseHttpsRedirection();
 
-// 1.* настройка аутентификации
+// 1.* РЅР°СЃС‚СЂРѕР№РєР° Р°СѓС‚РµРЅС‚РёС„РёРєР°С†РёРё
 app.UseAuthentication(); // [ + ]
 app.UseAuthorization();
 
 app.Map("login/{username}", (string username) =>
 {
-    // здесь будет прописан "регламент", запрос, с помощью которого осущесвиться:
-    // проверка того, кто приходит, есть ли у него доступ;
-    // считывание его данных и дальнейщее их хранение, таких как
-    // логин-пароль и логика для их проверки на связь в отд. классе;
+    // > POST /api/authentication/login :
+    // Р”Р°РЅРЅС‹Р№ endpoint РѕСЃС‚Р°РІР»РµРЅ РґР»СЏ РѕР±СЂР°С‚РЅРѕР№ СЃРѕРІРјРµСЃС‚РёРјРѕСЃС‚Рё
+    // СЃРј. AuthenticationController.cs РґР»СЏ РїРѕР»РЅРѕС†РµРЅРЅРѕР№ СЃРёСЃС‚РµРјС‹ Р°СѓС‚РµРЅС‚РёС„РёРєР°С†РёРё
+
+    return Results.Redirect("/swagger");
 });
 
 app.MapControllers();
